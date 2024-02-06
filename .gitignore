@@ -1,0 +1,5 @@
+node_modules/
+.env
+block.txt
+dbScripts.txt
+todolist.txt

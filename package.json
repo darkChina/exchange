@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "run-app": "node .\\app\\app.js",
+    "run-scanner": "node .\\scanner\\scannerApp.js",
+    "start": "concurrently \"npm run run-app\" \"npm run run-scanner\""
   },
   "keywords": [],
   "author": "",
@@ -17,6 +20,7 @@
     "web3": "^4.3.0"
   },
   "devDependencies": {
+    "concurrently": "^8.2.2",
     "dotenv": "^16.3.1",
     "nodemon": "^3.0.2"
   }

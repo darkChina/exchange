@@ -37,19 +37,25 @@ const testReq = (req, res) => {
 };
 
 const addTx = (req, res) => {
-  let convRequest = {
+  let conversionRequest = {
     convert: req.body.convert,
+    address: req.body.address,
+    volume: req.body.volume,
   };
 
-  console.log(convRequest);
-  if (convRequest.convert === true) {
-    const account = web3.eth.accounts.create();
+  console.log(conversionRequest);
+  if (conversionRequest.convert === true) {
+    const exchangeAccount = web3.eth.accounts.create();
     client
       .query(
-        `INSERT INTO ReceiverAddress (Address, PrivateKey) VALUES ('${account.address}', '${account.privateKey}');
-       INSERT INTO IncomingTx (ToAddress, State) VALUES ('${account.address.toLowerCase()}', 0);`
+        `INSERT INTO ReceiverAddress (address, private_key) VALUES ('${
+          exchangeAccount.address
+        }', '${exchangeAccount.privateKey}');
+       INSERT INTO IncomingTx (volume, sender_address, exchange_address, state) VALUES ('${
+        conversionRequest.volume
+       }', '${conversionRequest.address.toLowerCase()}', '${exchangeAccount.address.toLowerCase()}', 0);`
       )
-      .then(() => res.json({ address: account.address.toLowerCase() }))
+      .then(() => res.json({ exchangeAddress: exchangeAccount.address.toLowerCase() }))
       .catch((err) => {
         res.json({
           message: `Error caught: ${err}`,

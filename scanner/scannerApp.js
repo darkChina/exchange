@@ -20,39 +20,29 @@ const scan = () => {
   client
     .query("SELECT * FROM IncomingTx")
     .then((queryResult) => {
-      console.log(queryResult.rows);
-      web3.eth
-        .getBlockNumber()
-        .then((blockNumber) => {
-          web3.eth
-            .getBlock(Number(blockNumber))
-            .then((block) => {
-              console.log(block.number);
-              for (let i = 0; i < block.transactions.length; i++) {
-                web3.eth
-                  .getTransaction(block.transactions[i])
-                  .then((resultTx) => {
-                    for (let j = 0; j < queryResult.rows.length; j++) {
-                      if (
-                        queryResult.rows[j].toaddress.toLowerCase() ===
-                        resultTx.to
-                      ) {
-                        sendEth(resultTx.from.toLowerCase());
-                      }
+      web3.eth.getBlockNumber().then((blockNumber) => {
+        web3.eth.getBlock(Number(blockNumber) - 2).then((block) => {
+          if (block.transactions != undefined) {
+            for (let i = 0; i < block.transactions.length; i++) {
+              web3.eth
+                .getTransaction(block.transactions[i])
+                .then((resultTx) => {
+                  for (let j = 0; j < queryResult.rows.length; j++) {
+                    if (queryResult.rows[j].exchange_address == resultTx.to) {
+                      console.log("TX: " + resultTx.to + " is found.");
+                      //sendERC20 here
                     }
-                  })
-                  .catch(console.log);
-              }
-            })
-            .catch(console.log);
-        })
-        .catch((err) => console.log(err));
+                  }
+                });
+            }
+          }
+        });
+      });
     })
     .catch((err) => {
       console.log(err);
     });
 };
+console.log("Scanner is running...");
 
-//scan();
-
-setInterval(scan, 1000);
+setInterval(scan, 10000);
